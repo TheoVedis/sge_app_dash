@@ -102,3 +102,20 @@ input[type="password"] {
 .sidenav a:hover {
     color: #f1f1f1;
 }
+
+#sideMenu-btn {
+    display: inline-block;
+    border-radius: 10px;
+    border: 4px double #cccccc;
+    color: #eeeeee;
+    text-align: center;
+    font-size: 28px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+}
+
+#sideMenu-btn:hover {
+    background-color: green;
+}

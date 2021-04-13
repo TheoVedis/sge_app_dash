@@ -6,7 +6,7 @@ window.dash_clientside = Object.assign({}, window.dash_clientside, {
             if (val == undefined) {
                 return window.dash_clientside.no_update;
             }
-            if (val % 2 == 0) {
+            if (val % 2 == 1) {
                 document.getElementById("sideMenu").style.width = "350px";
                 document.getElementById("page-content").style.marginLeft =
                     "350px";
