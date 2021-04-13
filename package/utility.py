@@ -55,10 +55,6 @@ def dash_kwarg(outputs, inputs, states):
                     input_dict[item.component_id] = {item.component_property: args[ind]}
                 ind += 1
 
-            # print(out_dict)
-            # print(input_dict)
-            # print(state_dict)
-
             kwargs_dict = {
                 "outputs": out_dict,
                 "inputs": input_dict,

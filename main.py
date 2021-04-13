@@ -1,20 +1,23 @@
+import time
 from types import prepare_class
 from typing import Dict
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash_html_components.H1 import H1
 import dash_table
 from dash.dash import Dash
-from dash.dependencies import Input, Output, State
+from dash.dependencies import ClientsideFunction, Input, Output, State
 from dash.exceptions import PreventUpdate
 from dash_html_components.Data import Data
 
 from package import login_manager as lm
 from package.utility import dash_kwarg
 
-external_stylesheets = ["/assets/css/bWLwgP.css", "/assets/css/stylesheets.css"]
+# Inutile dash charge tout ce qu'il y a dans asset automatiquement
+# external_stylesheets = ["/assets/css/bWLwgP.css", "/assets/css/stylesheets.css"]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, title="SGE APP")
 
 
 layout_login = html.Div(
@@ -47,7 +50,21 @@ layout_login = html.Div(
     ],
 )
 
-layout_main = html.Div("Hello")
+layout_main = html.Div(
+    children=[
+        html.H2("TEST SLIDE BAR"),
+        html.Button(id="sideMenu-btn", children=["OPEN"]),
+        html.Div(
+            id="sideMenu",
+            className="sidenav",
+            hidden=False,
+            children=[
+                html.H1("Ligne1"),
+                html.H1("Ligne2"),
+            ],
+        ),
+    ]
+)
 
 # Pour eviter les erreur du type "input inexistante" mettre tout les layout de toutes les page dans le head
 # même si elles seront écrasé par la suite
@@ -241,5 +258,11 @@ def login(n_clicks, username, password, data):
     print("ERROR LOGIN")
     raise PreventUpdate
 
+
+app.clientside_callback(
+    ClientsideFunction(namespace="clientside", function_name="openNav"),
+    Output("sideMenu", "hidden"),
+    Input("sideMenu-btn", "n_clicks"),
+)
 
 app.run_server(debug=True)
