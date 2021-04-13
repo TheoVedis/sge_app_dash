@@ -16,6 +16,7 @@ def is_logged(data: dict) -> bool:
 
     if "is_logged" not in data.keys():
         return False
+
     return data["is_logged"]
 
 

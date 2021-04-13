@@ -130,6 +130,7 @@ def rooter(outputs: Dict[str, Dict], inputs: Dict[str, Dict], trigger: Dict):
             outputs["login_retour"]["children"],
             outputs["login_username"]["required"],
             outputs["login_password"]["required"],
+            succes,
         ) = login(
             inputs["login_button"]["n_clicks"],
             inputs["login_username"]["value"],
@@ -138,11 +139,11 @@ def rooter(outputs: Dict[str, Dict], inputs: Dict[str, Dict], trigger: Dict):
         )
 
         # Si l'utilisateur a réussi a se connecter
-        if outputs["session"]["data"]["is_logged"]:
+        if succes:
             (
                 outputs["page-content"]["children"],
                 outputs["url"]["pathname"],
-            ) = display_page(inputs["session"]["data"])
+            ) = display_page(outputs["session"]["data"])
 
         outputs["page-content"]["hidden"] = False
 
@@ -182,6 +183,7 @@ def login(n_clicks, username, password, data):
         outputs["login_retour"]["children"]: Champ de retour pour afficher le message erreur
         outputs["login_username"]["required"]: True le champ "nom d'utilisateur" s'affiche en rouge
         outputs["login_password"]["required"]: True le champ "mot de passe" s'affiche en rouge
+        succes: bool True si l'utilisateur a reussi a se connecter sinon False
     """
     data = data or {}
     if n_clicks == 0:
@@ -195,12 +197,7 @@ def login(n_clicks, username, password, data):
     # Affichage des champs en rouge
     if len(username) == 0 or len(password) == 0:
         data["is_logged"] = False
-        return (
-            data,
-            dash.no_update,
-            len(username) == 0,
-            len(password) == 0,
-        )
+        return (data, dash.no_update, len(username) == 0, len(password) == 0, False)
 
     # Verification du couple (username, password)
     val = lm.check_password(username, password)
@@ -212,7 +209,7 @@ def login(n_clicks, username, password, data):
         data["n_try"] = 0
         # data["type"] = "SGE" # ou autre en fct de l'username?
         pathname = "./"
-        return data, "connexion reussie !", dash.no_update, dash.no_update
+        return data, "connexion reussie !", dash.no_update, dash.no_update, True
 
     # Mot de passe incorrect
     elif val == 1:
@@ -222,12 +219,7 @@ def login(n_clicks, username, password, data):
         except KeyError:
             data["n_try"] = 1
 
-        return (
-            data,
-            "mot de passe incorrect",
-            dash.no_update,
-            dash.no_update,
-        )
+        return (data, "mot de passe incorrect", dash.no_update, dash.no_update, False)
 
     # Nom d'utilisateur incorrect
     elif val == 2:
@@ -242,6 +234,7 @@ def login(n_clicks, username, password, data):
             "nom d'utilisateur incorrect",
             dash.no_update,
             dash.no_update,
+            False,
         )
 
     # Cas jamais atteint
