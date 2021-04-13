@@ -1,0 +1,65 @@
+.banner {
+    height: 75px;
+    margin: 0px -10px 10px;
+    background-color: rgb(66, 196, 247);
+    border-radius: 2px;
+}
+
+.banner h2 {
+    color: white;
+    padding-top: 10px;
+    margin-left: 2%;
+    display: inline-block;
+}
+
+.banner Img {
+    position: relative;
+    float: right;
+    right: 10px;
+    height: 75px;
+}
+
+.login {
+    border: 3px solid #f1f1f1;
+    margin: 5% 20%;
+}
+
+.login .msg {
+    text-align: center;
+    margin-top: auto;
+}
+
+.login #login_retour {
+    text-align: center;
+    color: red;
+}
+
+.login input[type="text"],
+input[type="password"] {
+    width: 95%;
+    padding: 12px 20px;
+    margin: 8px 2.5%;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.login button {
+    background-color: #4caf50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 2%;
+    border: none;
+    cursor: pointer;
+    width: 96%;
+    text-align: center;
+    line-height: 0px;
+}
+
+.login button:hover {
+    opacity: 0.8;
+}
+
+.login .container {
+    padding: 16px;
+}
