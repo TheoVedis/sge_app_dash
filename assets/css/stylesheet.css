@@ -104,18 +104,25 @@ input[type="password"] {
 }
 
 #sideMenu-btn {
-    display: inline-block;
-    border-radius: 10px;
-    border: 4px double #cccccc;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    border: 0px;
+    width: auto;
     color: #eeeeee;
-    text-align: center;
-    font-size: 28px;
-    width: 200px;
     transition: all 0.5s;
     cursor: pointer;
-    margin: 5px;
+    margin-left: -2%;
 }
 
-#sideMenu-btn:hover {
-    background-color: green;
+#sideMenu-btn img:last-child {
+    display: none;
+}
+
+#sideMenu-btn:hover img:last-child {
+    display: inline;
+}
+
+#sideMenu-btn:hover img:first-child {
+    display: none;
 }

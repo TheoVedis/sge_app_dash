@@ -53,7 +53,13 @@ layout_login = html.Div(
 layout_main = html.Div(
     children=[
         html.H2("TEST SLIDE BAR"),
-        html.Button(id="sideMenu-btn", children=["OPEN"]),
+        html.Button(
+            id="sideMenu-btn",
+            children=[
+                html.Img(src="./assets/img/right_arrow.png", width=30),
+                html.Img(src="./assets/img/right_arrow_green.png", width=30),
+            ],
+        ),
         html.Div(
             id="sideMenu",
             className="sidenav",
