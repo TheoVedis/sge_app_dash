@@ -1,15 +1,14 @@
+from package.data_base_manager import get_id_cpt
 import time
-from types import prepare_class
 from typing import Dict
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash_html_components.H1 import H1
 import dash_table
-from dash.dash import Dash
 from dash.dependencies import ClientsideFunction, Input, Output, State
+from dash.development.base_component import Component
 from dash.exceptions import PreventUpdate
-from dash_html_components.Data import Data
 
 from package import login_manager as lm
 from package.utility import dash_kwarg
@@ -17,7 +16,7 @@ from package.utility import dash_kwarg
 # Inutile dash charge tout ce qu'il y a dans asset automatiquement
 # external_stylesheets = ["/assets/css/bWLwgP.css", "/assets/css/stylesheets.css"]
 
-app = dash.Dash(__name__, title="SGE APP")
+app = dash.Dash(__name__, title="SGE APP", suppress_callback_exceptions=True)
 
 
 layout_login = html.Div(
@@ -52,7 +51,6 @@ layout_login = html.Div(
 
 layout_main = html.Div(
     children=[
-        html.H2("TEST SLIDE BAR"),
         html.Button(
             id="sideMenu-btn",
             children=[
@@ -65,8 +63,15 @@ layout_main = html.Div(
             className="sidenav",
             hidden=False,
             children=[
-                html.H1("Ligne1"),
-                html.H1("Ligne2"),
+                html.P(className="title", children=["FILTRE"]),
+                html.Div(
+                    className="filtre",
+                    children=[
+                        dcc.Dropdown(id="select-id_cpt", multi=True),
+                        dcc.DatePickerRange(className="datePicker"),
+                        html.Button(id="filtre-valid", children="valid"),
+                    ],
+                ),
             ],
         ),
     ]
@@ -93,7 +98,7 @@ head = html.Div(
 app.layout = head
 
 # Layout complet - Utilité ?!
-# app.validation_layout = html.Div([head, layout_login, layout_main])
+app.validation_layout = html.Div([head, layout_login, layout_main])
 
 # Ensemble des outputs pour le callback ci-dessous
 outputs = [
@@ -104,6 +109,7 @@ outputs = [
     Output("login_retour", "children"),
     Output("login_username", "required"),
     Output("login_password", "required"),
+    Output("select-id_cpt", "options"),
 ]
 # Ensemble des inputs pour le callback ci-dessous
 inputs = [
@@ -141,9 +147,11 @@ def rooter(outputs: Dict[str, Dict], inputs: Dict[str, Dict], trigger: Dict):
 
     # cas changement d'url ou acces au site
     if trigger["id"] == "url.pathname":
-        outputs["page-content"]["children"], outputs["url"]["pathname"] = display_page(
-            inputs["session"]["data"]
-        )
+        (
+            outputs["page-content"]["children"],
+            outputs["url"]["pathname"],
+            outputs["select-id_cpt"]["options"],
+        ) = display_page(inputs["session"]["data"])
         outputs["page-content"]["hidden"] = False
 
     # Cas click sur le bouton login
@@ -166,6 +174,7 @@ def rooter(outputs: Dict[str, Dict], inputs: Dict[str, Dict], trigger: Dict):
             (
                 outputs["page-content"]["children"],
                 outputs["url"]["pathname"],
+                outputs["select-id_cpt"]["options"],
             ) = display_page(outputs["session"]["data"])
 
         outputs["page-content"]["hidden"] = False
@@ -183,12 +192,13 @@ def display_page(data: Dict[str, Dict]):
     Sortie:
         output["page-content"]["children"]: Le layout contenant la structure de la page a afficher
         output["url"]["pathname"]: L'adresse de la page (chemin sur le site)
+        outputs["select-id_cpt"]["options"]: Affichage des choix des différents compteurs
 
     """
     data = data or {}
     if not lm.is_logged(data):
-        return layout_login, "./login"
-    return layout_main, "./"
+        return [layout_login, layout_main], "./login", dash.no_update
+    return [layout_main], "./", [{"label": i, "value": i} for i in get_id_cpt()]
 
 
 def login(n_clicks, username, password, data):
